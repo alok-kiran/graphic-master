@@ -9,52 +9,61 @@ import {
   Type,
 } from "lucide-react";
 import { SidebarItem } from "./sidebar-item";
+import { ActiveTool } from "../types";
 
-export const Sidebar = () => {
+interface SidebarProps {
+  activeTool: ActiveTool;
+  onChangeActiveTool: (tool: ActiveTool) => void;
+};
+
+export const Sidebar = ({
+  activeTool,
+  onChangeActiveTool,
+}: SidebarProps) => {
   return (
     <aside className="bg-white flex flex-col w-[100px] h-full border-r overflow-y-auto">
       <ul className="flex flex-col">
       <SidebarItem
           icon={LayoutTemplate}
           label="Design"
-          isActive={true}
-          onClick={() => {}}
+          isActive={activeTool === "templates"}
+          onClick={() => onChangeActiveTool("templates")}
         />
-           <SidebarItem
+        <SidebarItem
           icon={ImageIcon}
           label="Image"
-          isActive={false}
-          onClick={() => {}}
+          isActive={activeTool === "images"}
+          onClick={() => onChangeActiveTool("images")}
         />
         <SidebarItem
           icon={Type}
           label="Text"
-          isActive={false}
-          onClick={() => {}}
+          isActive={activeTool === "text"}
+          onClick={() => onChangeActiveTool("text")}
         />
         <SidebarItem
           icon={Shapes}
           label="Shapes"
-          isActive={false}
-          onClick={() => {}}
+          isActive={activeTool === "shapes"}
+          onClick={() => onChangeActiveTool("shapes")}
         />
         <SidebarItem
           icon={Pencil}
           label="Draw"
-          isActive={false}
-          onClick={() => {}}
+          isActive={activeTool === "draw"}
+          onClick={() => onChangeActiveTool("draw")}
         />
         <SidebarItem
           icon={Sparkles}
           label="AI"
-          isActive={false}
-          onClick={() => {}}
+          isActive={activeTool === "ai"}
+          onClick={() => onChangeActiveTool("ai")}
         />
         <SidebarItem
           icon={Settings}
           label="Settings"
-          isActive={false}
-          onClick={() =>{}}
+          isActive={activeTool === "settings"}
+          onClick={() => onChangeActiveTool("settings")}
         />
       </ul>
     </aside>

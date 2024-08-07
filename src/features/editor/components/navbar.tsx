@@ -15,8 +15,17 @@ import { Button } from '@/components/ui/button';
 import { ChevronDown, Download, MousePointerClick, Redo2, Undo2 } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { Hint } from '@/components/hint';
+import { ActiveTool, Editor } from '../types';
+import { cn } from '@/lib/utils';
 
-function Navbar() {
+interface NavbarProps {
+  id?: string;
+  editor?: Editor | undefined;
+  activeTool: ActiveTool;
+  onChangeActiveTool: (tool: ActiveTool) => void;
+};
+
+function Navbar({ id, editor, activeTool, onChangeActiveTool }: NavbarProps) {
   return (
     <nav className="w-full flex items-center p-4 h-[68px] gap-x-8 border-b lg:pl-[34px]">
       <Logo />
@@ -45,7 +54,7 @@ function Navbar() {
         </DropdownMenu>
         <Separator orientation="vertical" className='mx-2'/>
         <Hint label='Select' side='bottom' sideOffset={10}>
-        <Button variant={"ghost"} size={"icon"} onClick={()=> {}} className=''>
+        <Button variant={"ghost"} size={"icon"} onClick={()=> onChangeActiveTool("select")} className={cn(activeTool === 'select' && "bg-gray-100")}>
           <MousePointerClick className='size-4'/>
         </Button>
         </Hint>
