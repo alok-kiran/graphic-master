@@ -125,6 +125,7 @@ function Navbar() {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+          {/* TODO: user button */}
           </div>
       </div>
     </nav>
