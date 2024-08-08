@@ -1,15 +1,49 @@
 import { fabric } from 'fabric';
-import { useCallback, useState } from "react";
+import { useCallback, useState, useMemo } from "react";
 import { useAutoResize } from './use-auto-resize';
+import { BuildEditorProps, CIRCLE_OPTIONS, Editor, FILL_COLOR, STROKE_COLOR, STROKE_DASH_ARRAY, STROKE_WIDTH } from '../types';
+
+const buildEditor = ({
+    canvas,
+    fillColor,
+    strokeColor,
+    strokeWidth,
+    strokeDashArray,
+}: BuildEditorProps): Editor => {
+    return {
+        addCircle: () => {
+            const object = new fabric.Circle({
+                ...CIRCLE_OPTIONS,
+                fill: fillColor,
+                stroke: strokeColor,
+                strokeWidth: strokeWidth,
+                strokeDashArray: strokeDashArray,
+              });
+            canvas.add(object);
+            canvas.setActiveObject(object);
+        }
+    }
+};
 
 export const useEditor = () => {
     const [canvas, setCanvas] = useState<fabric.Canvas | null>(null);
     const [container, setContainer] = useState<HTMLDivElement | null>(null);
+    const [fillColor, setFillColor] = useState(FILL_COLOR);
+    const [strokeColor, setStrokeColor] = useState(STROKE_COLOR);
+    const [strokeWidth, setStrokeWidth] = useState(STROKE_WIDTH);
+    const [strokeDashArray, setStrokeDashArray] = useState<number[]>(STROKE_DASH_ARRAY);
 
    useAutoResize({
         canvas,
         container,
     });
+
+    const editor = useMemo(() => {
+        if(canvas){
+            return buildEditor({canvas});
+        }
+        return undefined;
+    }, [canvas]);
 
     const init = useCallback(({
         initialCanvas,
@@ -58,7 +92,7 @@ export const useEditor = () => {
         const test = new fabric.Rect({
             width: 100,
             height: 100,
-            fill: 'red',
+            fill: '#000000',
         });
 
         initialCanvas.add(test);
@@ -66,6 +100,7 @@ export const useEditor = () => {
     }, []);
 
     return {
-        init
+        init,
+        editor,
     }
 };
