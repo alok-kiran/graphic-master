@@ -34,24 +34,24 @@ export const ShapeSidebar = ({
             icon={FaCircle}
           />
           <ShapeTool
-            onClick={() => {}}
+            onClick={() => editor?.addSoftRectangle()}
             icon={FaSquare}
           />
           <ShapeTool
-            onClick={() => {}}
+            onClick={() => editor?.addRectangle()}
             icon={FaSquareFull}
           />
           <ShapeTool
-            onClick={() => {}}
+            onClick={() => editor?.addTriangle()}
             icon={IoTriangle}
           />
           <ShapeTool
-            onClick={() => {}}
+            onClick={() => editor?.addInverseTriangle()}
             icon={IoTriangle}
             iconClassName="rotate-180"
           />
           <ShapeTool
-            onClick={() => {}}
+            onClick={() => editor?.addDiamond()}
             icon={FaDiamond}
           />
         </div>
