@@ -218,7 +218,7 @@ export const useEditor = () => {
             });
         }
         return undefined;
-    }, [canvas, fillColor, strokeColor, strokeWidth, strokeDashArray]);
+    }, [canvas, fillColor, strokeColor, strokeWidth, strokeDashArray, selectedObjects]);
 
     const init = useCallback(({
         initialCanvas,
