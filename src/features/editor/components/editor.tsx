@@ -6,31 +6,43 @@ import Navbar from './navbar';
 import Toolbar from './toolbar';
 import { Sidebar } from './sidebar';
 import Footer from './footer';
-import { ActiveTool } from '../types';
+import { ActiveTool, selectionDependentTools } from '../types';
 import { ShapeSidebar } from './shape-sidebar';
 import { FillColorSidebar } from './fill-color-sidebar';
+import { StrokeColorSidebar } from './stroke-color-sidebar';
 
 function Editor() {
-    const { init, editor } = useEditor();
-    const canvasRef = useRef(null);
-    const containerRef = useRef<HTMLDivElement>(null);
-    const [activeTool, setActiveTool] = useState<ActiveTool>("select");
 
-    const onChangeActiveTool = useCallback((tool: ActiveTool) => {
-      if (tool === "draw") {
-       // editor?.enableDrawingMode();
+  const canvasRef = useRef(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [activeTool, setActiveTool] = useState<ActiveTool>("select");
+
+  const onChangeActiveTool = useCallback((tool: ActiveTool) => {
+    if (tool === "draw") {
+     // editor?.enableDrawingMode();
+    }
+
+    if (activeTool === "draw") {
+      //editor?.disableDrawingMode();
+    }
+
+    if (tool === activeTool) {
+      return setActiveTool("select");
+    }
+    
+    setActiveTool(tool);
+  }, [activeTool]);
+
+    const onClearSelection = useCallback(() => {
+      if(selectionDependentTools.includes(activeTool)) {
+        onChangeActiveTool("select");
       }
-  
-      if (activeTool === "draw") {
-        //editor?.disableDrawingMode();
-      }
-  
-      if (tool === activeTool) {
-        return setActiveTool("select");
-      }
-      
-      setActiveTool(tool);
-    }, [activeTool]);
+    }, [activeTool, onChangeActiveTool]);
+
+
+    const { init, editor } = useEditor({
+      clearSelectionCallback: onClearSelection,
+    });
 
     useEffect(() => {
         const canvas = new fabric.Canvas(canvasRef.current, {
@@ -65,6 +77,11 @@ function Editor() {
                 onChangeActiveTool={onChangeActiveTool}
             />
             <FillColorSidebar 
+                editor={editor}
+                activeTool={activeTool}
+                onChangeActiveTool={onChangeActiveTool}
+            />
+            <StrokeColorSidebar 
                 editor={editor}
                 activeTool={activeTool}
                 onChangeActiveTool={onChangeActiveTool}

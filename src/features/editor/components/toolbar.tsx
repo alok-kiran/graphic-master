@@ -26,7 +26,8 @@ const Toolbar = ({
         return selectedObject.get(property);
     };
 
-    const fillColor = getProperty('fill');
+    const fillColor = editor?.getActiveFillColor();
+    const strokeColor = editor?.getActiveStrokeColor();
     const [properties, setProperties] = useState({
         fillColor,
     });
@@ -58,7 +59,43 @@ const Toolbar = ({
                        </div>
                     </Button>
                 </Hint>
-            </div>
+                </div>
+                <div className=" flex items-center h-full justify-center">
+                <Hint label="Border Color" side="bottom" sideOffset={5}>
+                    <Button
+                        size={"icon"}
+                        className={cn(
+                            activeTool === "stroke-color" && "bg-gray-100"
+                        )}
+                        onClick={() => onChangeActiveTool("fill")}
+                        variant="ghost"
+                    >
+                       <div className=" rounded-sm size-4 border-2 bg-white" style={{
+                        borderColor: fillColor,
+                       }}>
+
+                       </div>
+                    </Button>
+                </Hint>
+                </div>
+                <div className=" flex items-center h-full justify-center">
+                <Hint label="Stroke Color" side="bottom" sideOffset={5}>
+                    <Button
+                        size={"icon"}
+                        className={cn(
+                            activeTool === "stroke-color" && "bg-gray-100"
+                        )}
+                        onClick={() => onChangeActiveTool("stroke-color")}
+                        variant="ghost"
+                    >
+                       <div className=" rounded-sm size-4 border-2 bg-white" style={{
+                        borderColor: strokeColor,
+                       }}>
+
+                       </div>
+                    </Button>
+                </Hint>
+                </div>
         </div>
     );
 }

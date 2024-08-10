@@ -204,8 +204,6 @@ export type BuildEditorProps = {
 };
 
 export interface Editor {
-  fillColor: string;
-  strokeColor: string;
   strokeWidth: number;
   savePng: () => void;
   saveJpg: () => void;
