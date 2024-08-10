@@ -3,13 +3,18 @@ import { useCallback, useState, useMemo, useRef } from "react";
 import { useAutoResize } from './use-auto-resize';
 import { BuildEditorProps, CIRCLE_OPTIONS, DIAMOND_OPTIONS, Editor, FILL_COLOR, RECTANGLE_OPTIONS, STROKE_COLOR, STROKE_DASH_ARRAY, STROKE_WIDTH, TRIANGLE_OPTIONS } from '../types';
 import { useCanvasEvents } from './use-canvas-events';
+import { isTextType } from '../utils';
 
 const buildEditor = ({
     canvas,
     fillColor,
+    setFillColor,
     strokeColor,
     strokeWidth,
+    setStrokeWidth,
     strokeDashArray,
+    setStrokeColor,
+    selectedObjects,
 }: BuildEditorProps): Editor => {
 
     const getWorkspace = () => {
@@ -36,6 +41,37 @@ const buildEditor = ({
 
 
     return {
+
+        changeStrokeColor: (value: string) => {
+            setStrokeColor(value);
+            canvas.getActiveObjects().forEach((object) => {
+              // Text types don't have stroke
+              if (isTextType(object.type)) {
+                object.set({ fill: value });
+                return;
+              }
+      
+              object.set({ stroke: value });
+            });
+            canvas.freeDrawingBrush.color = value;
+            canvas.renderAll();
+          },
+        changeStrokeWidth: (value: number) => {
+            setStrokeWidth(value);
+            canvas.getActiveObjects().forEach((object) => {
+              object.set({ strokeWidth: value });
+            });
+            canvas.freeDrawingBrush.width = value;
+            canvas.renderAll();
+          },
+
+        changeFillColor: (value: string) => {
+            setFillColor(value);
+            canvas.getActiveObjects().forEach((object) => {
+              object.set({ fill: value });
+            });
+            canvas.renderAll();
+          },
         addCircle: () => {
             console.log('Adding circle');
             const object = new fabric.Circle({
@@ -125,6 +161,22 @@ const buildEditor = ({
             );
             addToCanvas(object);
           },
+          getActiveFillColor: () => {
+            const selectedObject = selectedObjects[0];
+      
+            if (!selectedObject) {
+              return fillColor;
+            }
+      
+            const value = selectedObject.get("fill") || fillColor;
+      
+            // Currently, gradients & patterns are not supported
+            return value as string;
+          },
+        fillColor,
+        strokeColor,
+        strokeWidth,
+        canvas,
     }
 };
 
@@ -153,7 +205,17 @@ export const useEditor = () => {
 
     const editor = useMemo(() => {
         if(canvas){
-            return buildEditor({canvas, fillColor, strokeColor, strokeWidth, strokeDashArray});
+            return buildEditor({
+                canvas, 
+                fillColor, 
+                strokeColor, 
+                strokeWidth, 
+                strokeDashArray,
+                setFillColor,
+                setStrokeWidth,
+                setStrokeColor,
+                selectedObjects,
+            });
         }
         return undefined;
     }, [canvas, fillColor, strokeColor, strokeWidth, strokeDashArray]);
