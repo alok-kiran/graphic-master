@@ -11,6 +11,9 @@ import { ShapeSidebar } from './shape-sidebar';
 import { FillColorSidebar } from './fill-color-sidebar';
 import { StrokeColorSidebar } from './stroke-color-sidebar';
 import { StrokeWidthSidebar } from './stroke-width-sidebar';
+import { OpacitySidebar } from './opacity-sidebar';
+import { TextSidebar } from './text-sidebar';
+import { FontSidebar } from './font-sidebar';
 
 function Editor() {
 
@@ -91,6 +94,21 @@ function Editor() {
                 editor={editor}
                 activeTool={activeTool}
                 onChangeActiveTool={onChangeActiveTool}
+            />
+            <OpacitySidebar
+              editor={editor}
+              activeTool={activeTool}
+              onChangeActiveTool={onChangeActiveTool}
+            />
+            <TextSidebar
+              editor={editor}
+              activeTool={activeTool}
+              onChangeActiveTool={onChangeActiveTool}
+            />
+            <FontSidebar
+              editor={editor}
+              activeTool={activeTool}
+              onChangeActiveTool={onChangeActiveTool}
             />
         <main className=' bg-muted flex-1 overflow-auto relative flex flex-col'>
             <Toolbar 

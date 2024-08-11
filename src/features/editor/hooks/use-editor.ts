@@ -1,7 +1,7 @@
 import { fabric } from 'fabric';
 import { useCallback, useState, useMemo, useRef } from "react";
 import { useAutoResize } from './use-auto-resize';
-import { BuildEditorProps, CIRCLE_OPTIONS, DIAMOND_OPTIONS, Editor, EditorHookProps, FILL_COLOR, RECTANGLE_OPTIONS, STROKE_COLOR, STROKE_DASH_ARRAY, STROKE_WIDTH, TRIANGLE_OPTIONS } from '../types';
+import { BuildEditorProps, CIRCLE_OPTIONS, DIAMOND_OPTIONS, Editor, EditorHookProps, FILL_COLOR, FONT_FAMILY, RECTANGLE_OPTIONS, STROKE_COLOR, STROKE_DASH_ARRAY, STROKE_WIDTH, TEXT_OPTIONS, TRIANGLE_OPTIONS } from '../types';
 import { useCanvasEvents } from './use-canvas-events';
 import { isTextType } from '../utils';
 
@@ -16,6 +16,8 @@ const buildEditor = ({
     selectedObjects,
     strokeDashArray,
     setStrokeDashArray,
+    fontFamily,
+    setFontFamily
 }: BuildEditorProps): Editor => {
 
     const getWorkspace = () => {
@@ -43,14 +45,49 @@ const buildEditor = ({
 
     return {
 
+      changeFontFamily: (value: string) => {
+        setFontFamily(value);
+        canvas.getActiveObjects().forEach((object) => {
+          if (isTextType(object.type)) {
+            // @ts-ignore
+            // Faulty TS library, fontFamily exists.
+            object.set({ fontFamily: value });
+          }
+        });
+        canvas.renderAll();
+      },
 
+      addText: (value, options) => {
+        const object = new fabric.Textbox(value, {
+          ...TEXT_OPTIONS,
+          fill: fillColor,
+          ...options,
+        });
+  
+        addToCanvas(object);
+      },
+      getActiveOpacity: () => {
+        const selectedObject = selectedObjects[0];
+  
+        if (!selectedObject) {
+          return 1;
+        }
+  
+        const value = selectedObject.get("opacity") || 1;
+  
+        return value;
+      },
+      changeOpacity: (value: number) => {
+        canvas.getActiveObjects().forEach((object) => {
+          object.set({ opacity: value });
+        });
+        canvas.renderAll();
+      },
       bringForward: () => {
         canvas.getActiveObjects().forEach((object) => {
           canvas.bringForward(object);
         });
-  
         canvas.renderAll();
-        
         const workspace = getWorkspace();
         workspace?.sendToBack();
       },
@@ -236,8 +273,22 @@ const buildEditor = ({
             // Currently, gradients & patterns are not supported
             return value as string;
           },
+          getActiveFontFamily: () => {
+            const selectedObject = selectedObjects[0];
+      
+            if (!selectedObject) {
+              return fontFamily;
+            }
+      
+            // @ts-ignore
+            // Faulty TS library, fontFamily exists.
+            const value = selectedObject.get("fontFamily") || fontFamily;
+      
+            return value;
+          },
         strokeWidth,
         canvas,
+        selectedObjects,
     }
 };
 
@@ -249,6 +300,7 @@ export const useEditor = ({
   const [container, setContainer] = useState<HTMLDivElement | null>(null);
   const [selectedObjects, setSelectedObjects] = useState<fabric.Object[]>([]);
 
+  const [fontFamily, setFontFamily] = useState(FONT_FAMILY);
   const [fillColor, setFillColor] = useState(FILL_COLOR);
   const [strokeColor, setStrokeColor] = useState(STROKE_COLOR);
   const [strokeWidth, setStrokeWidth] = useState(STROKE_WIDTH);
@@ -280,6 +332,8 @@ export const useEditor = ({
                 selectedObjects,
                 strokeDashArray,
                 setStrokeDashArray,
+                fontFamily, 
+                setFontFamily
             });
         }
         return undefined;

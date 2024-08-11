@@ -6,7 +6,10 @@ import { Hint } from "@/components/hint";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { BsBorderWidth } from "react-icons/bs";
-import { ArrowDown, ArrowUp } from "lucide-react";
+import { ArrowDown, ArrowUp, ChevronDown } from "lucide-react";
+import { RxTransparencyGrid } from "react-icons/rx";
+import { isTextType } from "../utils";
+
 
 interface ToolbarProps {
     editor: Editor | undefined;
@@ -20,23 +23,28 @@ const Toolbar = ({
     activeTool,
     onChangeActiveTool,
 }: ToolbarProps) => {
-    const selectedObject = editor?.canvas?.getActiveObject();
-    //const selectedObjectType = editor?.selectedObjects[0]?.type;
+  console.log(['editor', editor]);
+    const selectedObjectType = editor?.selectedObjects?.[0]?.type;
+    console.log(['selectedObjectType', selectedObjectType]);
 
-    const getProperty = (property: any) => {
-        if(!selectedObject) return null;
-        return selectedObject.get(property);
-    };
+    // const getProperty = (property: any) => {
+    //     if(!editor?.selectedObjects) return null;
+    //     return selectedObject.get(property);
+    // };
 
     const fillColor = editor?.getActiveFillColor();
     const strokeColor = editor?.getActiveStrokeColor();
+    const fontFamily = editor?.getActiveFontFamily();
     const [properties, setProperties] = useState({
         fillColor,
     });
+    //const selectedObjectType = editor?.selectedObjects[0]?.type;
 
-    console.log("selectedObject", selectedObject);
+    const isText = isTextType(selectedObjectType);
+    console.log(['isText', isText]);
+    const isImage = selectedObjectType === "image";
 
-    if (!selectedObject) {
+    if (editor?.selectedObjects?.length === 0) {
         return (
           <div className="shrink-0 h-[56px] border-b bg-white w-full flex items-center overflow-x-auto z-[49] p-2 gap-x-2" />
         );
@@ -62,7 +70,7 @@ const Toolbar = ({
                     </Button>
                 </Hint>
                 </div>
-                <div className="flex items-center h-full justify-center">
+                {!isText && <div className="flex items-center h-full justify-center">
           <Hint label="Stroke color" side="bottom" sideOffset={5}>
             <Button
               onClick={() => onChangeActiveTool("stroke-color")}
@@ -79,7 +87,8 @@ const Toolbar = ({
             </Button>
           </Hint>
         </div>
-        <div className="flex items-center h-full justify-center">
+}
+        {!isText && <div className="flex items-center h-full justify-center">
           <Hint label="Stroke width" side="bottom" sideOffset={5}>
             <Button
               onClick={() => onChangeActiveTool("stroke-width")}
@@ -93,6 +102,27 @@ const Toolbar = ({
             </Button>
           </Hint>
         </div>
+}
+{isText && (
+        <div className="flex items-center h-full justify-center">
+          <Hint label="Font" side="bottom" sideOffset={5}>
+            <Button
+              onClick={() => onChangeActiveTool("font")}
+              size="icon"
+              variant="ghost"
+              className={cn(
+                "w-auto px-2 text-sm",
+                activeTool === "font" && "bg-gray-100"
+              )}
+            >
+              <div className="max-w-[100px] truncate">
+                {fontFamily}
+              </div>
+              <ChevronDown className="size-4 ml-2 shrink-0" />
+            </Button>
+          </Hint>
+        </div>
+      )}
         <div className="flex items-center h-full justify-center">
         <Hint label="Bring forward" side="bottom" sideOffset={5}>
           <Button
@@ -115,6 +145,19 @@ const Toolbar = ({
           </Button>
         </Hint>
       </div>
+      <div className="flex items-center h-full justify-center">
+        <Hint label="Opacity" side="bottom" sideOffset={5}>
+          <Button
+            onClick={() => onChangeActiveTool("opacity")}
+            size="icon"
+            variant="ghost"
+            className={cn(activeTool === "opacity" && "bg-gray-100")}
+          >
+            <RxTransparencyGrid className="size-4" />
+          </Button>
+        </Hint>
+      </div>
+
         </div>
     );
 }
