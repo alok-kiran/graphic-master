@@ -10,6 +10,7 @@ import { ActiveTool, selectionDependentTools } from '../types';
 import { ShapeSidebar } from './shape-sidebar';
 import { FillColorSidebar } from './fill-color-sidebar';
 import { StrokeColorSidebar } from './stroke-color-sidebar';
+import { StrokeWidthSidebar } from './stroke-width-sidebar';
 
 function Editor() {
 
@@ -82,6 +83,11 @@ function Editor() {
                 onChangeActiveTool={onChangeActiveTool}
             />
             <StrokeColorSidebar 
+                editor={editor}
+                activeTool={activeTool}
+                onChangeActiveTool={onChangeActiveTool}
+            />
+            <StrokeWidthSidebar 
                 editor={editor}
                 activeTool={activeTool}
                 onChangeActiveTool={onChangeActiveTool}

@@ -12,9 +12,10 @@ const buildEditor = ({
     strokeColor,
     strokeWidth,
     setStrokeWidth,
-    strokeDashArray,
     setStrokeColor,
     selectedObjects,
+    strokeDashArray,
+    setStrokeDashArray,
 }: BuildEditorProps): Editor => {
 
     const getWorkspace = () => {
@@ -41,6 +42,29 @@ const buildEditor = ({
 
 
     return {
+
+      getActiveStrokeWidth: () => {
+        const selectedObject = selectedObjects[0];
+  
+        if (!selectedObject) {
+          return strokeWidth;
+        }
+  
+        const value = selectedObject.get("strokeWidth") || strokeWidth;
+  
+        return value;
+      },
+      getActiveStrokeDashArray: () => {
+        const selectedObject = selectedObjects[0];
+  
+        if (!selectedObject) {
+          return strokeDashArray;
+        }
+  
+        const value = selectedObject.get("strokeDashArray") || strokeDashArray;
+  
+        return value;
+      },
 
       getActiveStrokeColor: () => {
         const selectedObject = selectedObjects[0];
@@ -173,6 +197,13 @@ const buildEditor = ({
             );
             addToCanvas(object);
           },
+          changeStrokeDashArray: (value: number[]) => {
+            setStrokeDashArray(value);
+            canvas.getActiveObjects().forEach((object) => {
+              object.set({ strokeDashArray: value });
+            });
+            canvas.renderAll();
+          },
           getActiveFillColor: () => {
             const selectedObject = selectedObjects[0];
       
@@ -227,6 +258,8 @@ export const useEditor = ({
                 setStrokeWidth,
                 setStrokeColor,
                 selectedObjects,
+                strokeDashArray,
+                setStrokeDashArray,
             });
         }
         return undefined;
