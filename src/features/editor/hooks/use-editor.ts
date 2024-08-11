@@ -1,7 +1,7 @@
 import { fabric } from 'fabric';
 import { useCallback, useState, useMemo, useRef } from "react";
 import { useAutoResize } from './use-auto-resize';
-import { BuildEditorProps, CIRCLE_OPTIONS, DIAMOND_OPTIONS, Editor, EditorHookProps, FILL_COLOR, FONT_FAMILY, RECTANGLE_OPTIONS, STROKE_COLOR, STROKE_DASH_ARRAY, STROKE_WIDTH, TEXT_OPTIONS, TRIANGLE_OPTIONS } from '../types';
+import { BuildEditorProps, CIRCLE_OPTIONS, DIAMOND_OPTIONS, Editor, EditorHookProps, FILL_COLOR, FONT_FAMILY, FONT_SIZE, FONT_WEIGHT, RECTANGLE_OPTIONS, STROKE_COLOR, STROKE_DASH_ARRAY, STROKE_WIDTH, TEXT_OPTIONS, TRIANGLE_OPTIONS } from '../types';
 import { useCanvasEvents } from './use-canvas-events';
 import { isTextType } from '../utils';
 
@@ -285,6 +285,183 @@ const buildEditor = ({
             const value = selectedObject.get("fontFamily") || fontFamily;
       
             return value;
+          },
+          getActiveFontWeight: () => {
+            const selectedObject = selectedObjects[0];
+      
+            if (!selectedObject) {
+              return FONT_WEIGHT;
+            }
+      
+            // @ts-ignore
+            // Faulty TS library, fontWeight exists.
+            const value = selectedObject.get("fontWeight") || FONT_WEIGHT;
+      
+            return value;
+          },
+          getActiveFontStyle: () => {
+            const selectedObject = selectedObjects[0];
+      
+            if (!selectedObject) {
+              return "normal";
+            }
+      
+            // @ts-ignore
+            // Faulty TS library, fontStyle exists.
+            const value = selectedObject.get("fontStyle") || "normal";
+      
+            return value;
+          },
+          changeTextAlign: (value: string) => {
+            canvas.getActiveObjects().forEach((object) => {
+              if (isTextType(object.type)) {
+                // @ts-ignore
+                // Faulty TS library, textAlign exists.
+                object.set({ textAlign: value });
+              }
+            });
+            canvas.renderAll();
+          },
+          getActiveTextAlign: () => {
+            const selectedObject = selectedObjects[0];
+      
+            if (!selectedObject) {
+              return "left";
+            }
+      
+            // @ts-ignore
+            // Faulty TS library, textAlign exists.
+            const value = selectedObject.get("textAlign") || "left";
+      
+            return value;
+          },
+          changeFontUnderline: (value: boolean) => {
+            canvas.getActiveObjects().forEach((object) => {
+              if (isTextType(object.type)) {
+                // @ts-ignore
+                // Faulty TS library, underline exists.
+                object.set({ underline: value });
+              }
+            });
+            canvas.renderAll();
+          },
+          getActiveFontUnderline: () => {
+            const selectedObject = selectedObjects[0];
+      
+            if (!selectedObject) {
+              return false;
+            }
+      
+            // @ts-ignore
+            // Faulty TS library, underline exists.
+            const value = selectedObject.get("underline") || false;
+      
+            return value;
+          },
+          changeFontStyle: (value: string) => {
+            canvas.getActiveObjects().forEach((object) => {
+              if (isTextType(object.type)) {
+                // @ts-ignore
+                // Faulty TS library, fontStyle exists.
+                object.set({ fontStyle: value });
+              }
+            });
+            canvas.renderAll();
+          },
+          changeFontLinethrough: (value: boolean) => {
+            canvas.getActiveObjects().forEach((object) => {
+              if (isTextType(object.type)) {
+                // @ts-ignore
+                // Faulty TS library, linethrough exists.
+                object.set({ linethrough: value });
+              }
+            });
+            canvas.renderAll();
+          },
+          getActiveFontLinethrough: () => {
+            const selectedObject = selectedObjects[0];
+      
+            if (!selectedObject) {
+              return false;
+            }
+      
+            // @ts-ignore
+            // Faulty TS library, linethrough exists.
+            const value = selectedObject.get("linethrough") || false;
+      
+            return value;
+          },
+          changeFontSize: (value: number) => {
+            canvas.getActiveObjects().forEach((object) => {
+              if (isTextType(object.type)) {
+                // @ts-ignore
+                // Faulty TS library, fontSize exists.
+                object.set({ fontSize: value });
+              }
+            });
+            canvas.renderAll();
+          },
+          getActiveFontSize: () => {
+            const selectedObject = selectedObjects[0];
+      
+            if (!selectedObject) {
+              return FONT_SIZE;
+            }
+      
+            // @ts-ignore
+            // Faulty TS library, fontSize exists.
+            const value = selectedObject.get("fontSize") || FONT_SIZE;
+      
+            return value;
+          },
+          getActiveTextAlign: () => {
+            const selectedObject = selectedObjects[0];
+      
+            if (!selectedObject) {
+              return "left";
+            }
+      
+            // @ts-ignore
+            // Faulty TS library, textAlign exists.
+            const value = selectedObject.get("textAlign") || "left";
+      
+            return value;
+          },
+          getActiveFontUnderline: () => {
+            const selectedObject = selectedObjects[0];
+      
+            if (!selectedObject) {
+              return false;
+            }
+      
+            // @ts-ignore
+            // Faulty TS library, underline exists.
+            const value = selectedObject.get("underline") || false;
+      
+            return value;
+          },
+          getActiveFontLinethrough: () => {
+            const selectedObject = selectedObjects[0];
+      
+            if (!selectedObject) {
+              return false;
+            }
+      
+            // @ts-ignore
+            // Faulty TS library, linethrough exists.
+            const value = selectedObject.get("linethrough") || false;
+      
+            return value;
+          },
+          changeFontWeight: (value: number) => {
+            canvas.getActiveObjects().forEach((object) => {
+              if (isTextType(object.type)) {
+                // @ts-ignore
+                // Faulty TS library, fontWeight exists.
+                object.set({ fontWeight: value });
+              }
+            });
+            canvas.renderAll();
           },
         strokeWidth,
         canvas,
