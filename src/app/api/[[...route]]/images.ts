@@ -5,7 +5,7 @@ import { eq } from "drizzle-orm";
 import { zValidator } from "@hono/zod-validator";
 import { unsplash } from "@/lib/unsplash";
 
-const DEFAULT_COUNT = 50;
+const DEFAULT_COUNT = 6;
 const DEFAULT_COLLECTIONS = ["317099"];
 
 // import { db } from "@/db/drizzle";
