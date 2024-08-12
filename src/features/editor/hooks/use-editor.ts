@@ -3,7 +3,7 @@ import { useCallback, useState, useMemo, useRef } from "react";
 import { useAutoResize } from './use-auto-resize';
 import { BuildEditorProps, CIRCLE_OPTIONS, DIAMOND_OPTIONS, Editor, EditorHookProps, FILL_COLOR, FONT_FAMILY, FONT_SIZE, FONT_WEIGHT, RECTANGLE_OPTIONS, STROKE_COLOR, STROKE_DASH_ARRAY, STROKE_WIDTH, TEXT_OPTIONS, TRIANGLE_OPTIONS } from '../types';
 import { useCanvasEvents } from './use-canvas-events';
-import { isTextType } from '../utils';
+import { createFilter, isTextType } from '../utils';
 
 const buildEditor = ({
     canvas,
@@ -373,6 +373,20 @@ const buildEditor = ({
                 crossOrigin: "anonymous",
               },
             );
+          },
+          changeImageFilter: (value: string) => {
+            const objects = canvas.getActiveObjects();
+            objects.forEach((object) => {
+              if (object.type === "image") {
+                const imageObject = object as fabric.Image;
+      
+                const effect = createFilter(value);
+      
+                imageObject.filters = effect ? [effect] : [];
+                imageObject.applyFilters();
+                canvas.renderAll();
+              }
+            });
           },
           delete: () => {
             canvas.getActiveObjects().forEach((object) => canvas.remove(object));

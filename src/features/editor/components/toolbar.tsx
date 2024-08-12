@@ -6,6 +6,7 @@ import { Hint } from "@/components/hint";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { BsBorderWidth } from "react-icons/bs";
+import { TbColorFilter } from "react-icons/tb";
 import { AlignCenter, AlignLeft, AlignRight, ArrowDown, ArrowUp, ChevronDown, Trash } from "lucide-react";
 import { RxTransparencyGrid } from "react-icons/rx";
 import { isTextType } from "../utils";
@@ -145,7 +146,7 @@ const Toolbar = ({
 
     return (
         <div className="shrink-0 h-[56px] border-b bg-white w-full flex items-center overflow-x-auto z-[49] p-2 gap-x-2">
-            <div className=" flex items-center h-full justify-center">
+            {!isImage && <div className=" flex items-center h-full justify-center">
                 <Hint label="Color" side="bottom" sideOffset={5}>
                     <Button
                         size={"icon"}
@@ -163,6 +164,7 @@ const Toolbar = ({
                     </Button>
                 </Hint>
                 </div>
+}
                 {!isText && <div className="flex items-center h-full justify-center">
           <Hint label="Stroke color" side="bottom" sideOffset={5}>
             <Button
@@ -334,6 +336,22 @@ const Toolbar = ({
             value={properties.fontSize}
             onChange={onChangeFontSize}
          />
+        </div>
+      )}
+          {isImage && (
+        <div className="flex items-center h-full justify-center">
+          <Hint label="Filters" side="bottom" sideOffset={5}>
+            <Button
+              onClick={() => onChangeActiveTool("filter")}
+              size="icon"
+              variant="ghost"
+              className={cn(
+                activeTool === "filter" && "bg-gray-100"
+              )}
+            >
+              <TbColorFilter className="size-4" />
+            </Button>
+          </Hint>
         </div>
       )}
         <div className="flex items-center h-full justify-center">
