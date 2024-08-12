@@ -1,17 +1,13 @@
 import { Context, Hono } from "hono";
 import { handle } from "hono/vercel";
-
+import images from './images'
 export const runtime = "nodejs";
 
 const app = new Hono().basePath("/api");
 
-app.get("/test", (context) => {
-    return context.json({ message: "Hello, World!" });
-  })
-
-  app.get("/user/:name", (context) => {
-    const name = context.req.param("name");
-    return context.json({ userName: name });
-  })
+const routes = app
+  .route("/images", images)
 
   export const GET = handle(app);
+
+  export type AppType = typeof routes;
