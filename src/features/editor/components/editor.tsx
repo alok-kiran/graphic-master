@@ -18,6 +18,7 @@ import { ImageSidebar } from './image-sidebar';
 import { FilterSidebar } from './filter-sidebar';
 import { AiSidebar } from './ai-sidebar';
 import { RemoveBgSidebar } from './remove-bg-sidebar';
+import { DrawSidebar } from './draw-sidebar';
 
 function Editor() {
 
@@ -25,32 +26,32 @@ function Editor() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeTool, setActiveTool] = useState<ActiveTool>("select");
 
-  const onChangeActiveTool = useCallback((tool: ActiveTool) => {
-    if (tool === "draw") {
-     // editor?.enableDrawingMode();
-    }
 
-    if (activeTool === "draw") {
-      //editor?.disableDrawingMode();
+  const onClearSelection = useCallback(() => {
+    if(selectionDependentTools.includes(activeTool)) {
+      onChangeActiveTool("select");
     }
-
-    if (tool === activeTool) {
-      return setActiveTool("select");
-    }
-    
-    setActiveTool(tool);
   }, [activeTool]);
-
-    const onClearSelection = useCallback(() => {
-      if(selectionDependentTools.includes(activeTool)) {
-        onChangeActiveTool("select");
-      }
-    }, [activeTool, onChangeActiveTool]);
-
 
     const { init, editor } = useEditor({
       clearSelectionCallback: onClearSelection,
     });
+
+    const onChangeActiveTool = useCallback((tool: ActiveTool) => {
+      if (tool === "draw") {
+        editor?.enableDrawingMode();
+      }
+  
+      if (activeTool === "draw") {
+        editor?.disableDrawingMode();
+      }
+  
+      if (tool === activeTool) {
+        return setActiveTool("select");
+      }
+      
+      setActiveTool(tool);
+    }, [activeTool, editor]);
 
     useEffect(() => {
         const canvas = new fabric.Canvas(canvasRef.current, {
@@ -130,6 +131,11 @@ function Editor() {
               onChangeActiveTool={onChangeActiveTool}
             />
             <RemoveBgSidebar
+              editor={editor}
+              activeTool={activeTool}
+              onChangeActiveTool={onChangeActiveTool}
+            />
+            <DrawSidebar
               editor={editor}
               activeTool={activeTool}
               onChangeActiveTool={onChangeActiveTool}
