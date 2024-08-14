@@ -5,7 +5,6 @@ import { useEditor } from '../hooks/use-editor'
 import Navbar from './navbar';
 import Toolbar from './toolbar';
 import { Sidebar } from './sidebar';
-import Footer from './footer';
 import { ActiveTool, selectionDependentTools } from '../types';
 import { ShapeSidebar } from './shape-sidebar';
 import { FillColorSidebar } from './fill-color-sidebar';
@@ -19,6 +18,8 @@ import { FilterSidebar } from './filter-sidebar';
 import { AiSidebar } from './ai-sidebar';
 import { RemoveBgSidebar } from './remove-bg-sidebar';
 import { DrawSidebar } from './draw-sidebar';
+import { SettingsSidebar } from './settings-sidebar';
+import { Footer } from './footer';
 
 function Editor() {
 
@@ -140,6 +141,11 @@ function Editor() {
               activeTool={activeTool}
               onChangeActiveTool={onChangeActiveTool}
             />
+            <SettingsSidebar
+              editor={editor}
+              activeTool={activeTool}
+              onChangeActiveTool={onChangeActiveTool}
+            />
         <main className=' bg-muted flex-1 overflow-auto relative flex flex-col'>
             <Toolbar 
               editor={editor}
@@ -150,7 +156,7 @@ function Editor() {
             <div ref={containerRef} className=' flex-1 h-[calc(100%-124px)] bg-muted'>
             <canvas ref={canvasRef}></canvas>
         </div>
-        <Footer />
+        <Footer editor={editor} />
         </main>
     </div>
     </div>

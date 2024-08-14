@@ -8,6 +8,7 @@ import { useClipboard } from './use-clipboard';
 import { useHotkeys } from './use-hotkeys';
 
 const buildEditor = ({
+    autoZoom,
     canvas,
     fillColor,
     setFillColor,
@@ -48,6 +49,38 @@ const buildEditor = ({
 
 
     return {
+      getWorkspace,
+      autoZoom,
+      zoomIn: () => {
+        console.log('Zooming in');
+        let zoomRatio = canvas.getZoom();
+        zoomRatio += 0.05;
+        const center = canvas.getCenter();
+        canvas.zoomToPoint(
+          new fabric.Point(center.left, center.top),
+          zoomRatio > 1 ? 1 : zoomRatio
+        );
+      },
+      zoomOut: () => {
+        let zoomRatio = canvas.getZoom();
+        zoomRatio -= 0.05;
+        const center = canvas.getCenter();
+        canvas.zoomToPoint(
+          new fabric.Point(center.left, center.top),
+          zoomRatio < 0.2 ? 0.2 : zoomRatio,
+        );
+      },
+      changeSize: (value: { width: number; height: number }) => {
+        const workspace = getWorkspace();
+  
+        workspace?.set(value);
+        autoZoom();
+      },
+      changeBackground: (value: string) => {
+        const workspace = getWorkspace();
+        workspace?.set({ fill: value });
+        canvas.renderAll();
+      },
       enableDrawingMode: () => {
         canvas.discardActiveObject();
         canvas.renderAll();
@@ -81,6 +114,8 @@ const buildEditor = ({
   
         addToCanvas(object);
       },
+
+      
       getActiveOpacity: () => {
         const selectedObject = selectedObjects[0];
   
@@ -181,7 +216,6 @@ const buildEditor = ({
             canvas.renderAll();
           },
         addCircle: () => {
-            console.log('Adding circle');
             const object = new fabric.Circle({
                 ...CIRCLE_OPTIONS,
                 fill: fillColor,
@@ -192,7 +226,6 @@ const buildEditor = ({
             addToCanvas(object)
         },
         addSoftRectangle: () => {
-            console.log('Adding addSoftRectangle');
             const object = new fabric.Rect({
               ...RECTANGLE_OPTIONS,
               rx: 50,
@@ -464,45 +497,6 @@ const buildEditor = ({
       
             return value;
           },
-          getActiveTextAlign: () => {
-            const selectedObject = selectedObjects[0];
-      
-            if (!selectedObject) {
-              return "left";
-            }
-      
-            // @ts-ignore
-            // Faulty TS library, textAlign exists.
-            const value = selectedObject.get("textAlign") || "left";
-      
-            return value;
-          },
-          getActiveFontUnderline: () => {
-            const selectedObject = selectedObjects[0];
-      
-            if (!selectedObject) {
-              return false;
-            }
-      
-            // @ts-ignore
-            // Faulty TS library, underline exists.
-            const value = selectedObject.get("underline") || false;
-      
-            return value;
-          },
-          getActiveFontLinethrough: () => {
-            const selectedObject = selectedObjects[0];
-      
-            if (!selectedObject) {
-              return false;
-            }
-      
-            // @ts-ignore
-            // Faulty TS library, linethrough exists.
-            const value = selectedObject.get("linethrough") || false;
-      
-            return value;
-          },
           changeFontWeight: (value: number) => {
             canvas.getActiveObjects().forEach((object) => {
               if (isTextType(object.type)) {
@@ -538,7 +532,7 @@ export const useEditor = ({
 
   const { copy, paste } = useClipboard({ canvas });
 
-   useAutoResize({
+   const { autoZoom } = useAutoResize({
         canvas,
         container,
     });
@@ -562,6 +556,7 @@ export const useEditor = ({
     const editor = useMemo(() => {
         if(canvas){
             return buildEditor({
+                autoZoom,
                 copy, 
                 paste,
                 canvas, 
@@ -580,7 +575,7 @@ export const useEditor = ({
             });
         }
         return undefined;
-    }, [canvas, fillColor, strokeColor, strokeWidth, strokeDashArray, selectedObjects, copy, paste]);
+    }, [canvas, fillColor, strokeColor, strokeWidth, strokeDashArray, selectedObjects, copy, paste, autoZoom]);
 
     const init = useCallback(({
         initialCanvas,
@@ -589,7 +584,6 @@ export const useEditor = ({
         initialCanvas: fabric.Canvas;
         initialContainer: HTMLDivElement;
     }) => {
-        console.log('Editor initialized', initialCanvas, initialContainer);
 
         fabric.Object.prototype.set({
           cornerColor: "#FFF",

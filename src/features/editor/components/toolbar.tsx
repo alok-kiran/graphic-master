@@ -27,9 +27,7 @@ const Toolbar = ({
     activeTool,
     onChangeActiveTool,
 }: ToolbarProps) => {
-  console.log(['editor', editor]);
     const selectedObjectType = editor?.selectedObjects?.[0]?.type;
-    console.log(['selectedObjectType', selectedObjectType]);
     const initialFillColor = editor?.getActiveFillColor();
     const initialStrokeColor = editor?.getActiveStrokeColor();
     const initialFontFamily = editor?.getActiveFontFamily();
@@ -53,7 +51,6 @@ const Toolbar = ({
     const selectedObject = editor?.selectedObjects?.[0];
 
     const isText = isTextType(selectedObjectType);
-    console.log(['isText', isText]);
     const isImage = selectedObjectType === "image";
 
     const onChangeFontSize = (value: number) => {
