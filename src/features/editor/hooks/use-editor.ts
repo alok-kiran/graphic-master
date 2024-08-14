@@ -4,6 +4,8 @@ import { useAutoResize } from './use-auto-resize';
 import { BuildEditorProps, CIRCLE_OPTIONS, DIAMOND_OPTIONS, Editor, EditorHookProps, FILL_COLOR, FONT_FAMILY, FONT_SIZE, FONT_WEIGHT, RECTANGLE_OPTIONS, STROKE_COLOR, STROKE_DASH_ARRAY, STROKE_WIDTH, TEXT_OPTIONS, TRIANGLE_OPTIONS } from '../types';
 import { useCanvasEvents } from './use-canvas-events';
 import { createFilter, isTextType } from '../utils';
+import { useClipboard } from './use-clipboard';
+import { useHotkeys } from './use-hotkeys';
 
 const buildEditor = ({
     canvas,
@@ -17,7 +19,9 @@ const buildEditor = ({
     strokeDashArray,
     setStrokeDashArray,
     fontFamily,
-    setFontFamily
+    setFontFamily,
+    copy, 
+    paste
 }: BuildEditorProps): Editor => {
 
     const getWorkspace = () => {
@@ -44,7 +48,8 @@ const buildEditor = ({
 
 
     return {
-
+      onCopy: () => copy(),
+      onPaste: () => paste(),
       changeFontFamily: (value: string) => {
         setFontFamily(value);
         canvas.getActiveObjects().forEach((object) => {
@@ -518,10 +523,24 @@ export const useEditor = ({
   const [strokeWidth, setStrokeWidth] = useState(STROKE_WIDTH);
   const [strokeDashArray, setStrokeDashArray] = useState<number[]>(STROKE_DASH_ARRAY);
 
+
+
+
+  const { copy, paste } = useClipboard({ canvas });
+
    useAutoResize({
         canvas,
         container,
     });
+
+    // useHotkeys({
+    //   undo,
+    //   redo,
+    //   copy,
+    //   paste,
+    //   save,
+    //   canvas,
+    // });
 
     useCanvasEvents({
        // save,
@@ -533,6 +552,8 @@ export const useEditor = ({
     const editor = useMemo(() => {
         if(canvas){
             return buildEditor({
+                copy, 
+                paste,
                 canvas, 
                 fillColor, 
                 strokeColor, 
@@ -549,7 +570,7 @@ export const useEditor = ({
             });
         }
         return undefined;
-    }, [canvas, fillColor, strokeColor, strokeWidth, strokeDashArray, selectedObjects]);
+    }, [canvas, fillColor, strokeColor, strokeWidth, strokeDashArray, selectedObjects, copy, paste]);
 
     const init = useCallback(({
         initialCanvas,
