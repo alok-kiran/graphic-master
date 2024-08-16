@@ -20,6 +20,7 @@ import { RemoveBgSidebar } from './remove-bg-sidebar';
 import { DrawSidebar } from './draw-sidebar';
 import { SettingsSidebar } from './settings-sidebar';
 import { Footer } from './footer';
+import debounce from 'lodash.debounce';
 
 function Editor() {
 
@@ -27,6 +28,19 @@ function Editor() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeTool, setActiveTool] = useState<ActiveTool>("select");
 
+  const debouncedSave = useCallback(
+    debounce(
+      (values: { 
+        json: string,
+        height: number,
+        width: number,
+      }) => {
+        //mutate(values);
+    },
+    500
+  ), [
+   // mutate
+  ]);
 
   const onClearSelection = useCallback(() => {
     if(selectionDependentTools.includes(activeTool)) {
@@ -73,6 +87,7 @@ function Editor() {
   return (
     <div className=' h-full flex flex-col'>
         <Navbar 
+          editor={editor}
           activeTool={activeTool}
           onChangeActiveTool={onChangeActiveTool}
         />

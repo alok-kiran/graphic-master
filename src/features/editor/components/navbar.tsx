@@ -26,6 +26,7 @@ interface NavbarProps {
 };
 
 function Navbar({ id, editor, activeTool, onChangeActiveTool }: NavbarProps) {
+  console.log('Navbar editor', editor)
   return (
     <nav className="w-full flex items-center p-4 h-[68px] gap-x-8 border-b lg:pl-[34px]">
       <Logo />
@@ -59,12 +60,12 @@ function Navbar({ id, editor, activeTool, onChangeActiveTool }: NavbarProps) {
         </Button>
         </Hint>
         <Hint label='Undo' side='bottom' sideOffset={10}>
-        <Button variant={"ghost"} size={"icon"} onClick={()=> {}} className=''>
+        <Button disabled={!editor?.canUndo()} variant={"ghost"} size={"icon"} onClick={()=> editor?.onUndo()} className=''>
           <Undo2 className='size-4'/>
         </Button>
         </Hint>
         <Hint label='Redo' side='bottom' sideOffset={10}>
-        <Button variant={"ghost"} size={"icon"} onClick={()=> {}} className=''>
+        <Button variant={"ghost"} disabled={!editor?.canRedo()} size={"icon"} onClick={()=> editor?.onRedo()} className=''>
           <Redo2 className='size-4'/>
         </Button>
         </Hint>
