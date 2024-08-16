@@ -3,10 +3,11 @@ import { useCallback, useState, useMemo, useRef } from "react";
 import { useAutoResize } from './use-auto-resize';
 import { BuildEditorProps, CIRCLE_OPTIONS, DIAMOND_OPTIONS, Editor, EditorHookProps, FILL_COLOR, FONT_FAMILY, FONT_SIZE, FONT_WEIGHT, JSON_KEYS, RECTANGLE_OPTIONS, STROKE_COLOR, STROKE_DASH_ARRAY, STROKE_WIDTH, TEXT_OPTIONS, TRIANGLE_OPTIONS } from '../types';
 import { useCanvasEvents } from './use-canvas-events';
-import { createFilter, isTextType } from '../utils';
+import { createFilter, downloadFile, isTextType, transformText } from '../utils';
 import { useClipboard } from './use-clipboard';
 import { useHotkeys } from './use-hotkeys';
 import { useHistory } from './use-history';
+import { useWindowEvents } from './use-window-events';
 
 const buildEditor = ({
   autoZoom,
@@ -37,6 +38,68 @@ const buildEditor = ({
       .find((object) => object.name === "clip");
   };
 
+  const generateSaveOptions = () => {
+    const { width, height, left, top } = getWorkspace() as fabric.Rect;
+
+    return {
+      name: "Image",
+      format: "png",
+      quality: 1,
+      width,
+      height,
+      left,
+      top,
+    };
+  };
+
+  const savePng = () => {
+    const options = generateSaveOptions();
+
+    canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
+    const dataUrl = canvas.toDataURL(options);
+
+    downloadFile(dataUrl, "png");
+    autoZoom();
+  };
+
+  const saveSvg = () => {
+    const options = generateSaveOptions();
+
+    canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
+    const dataUrl = canvas.toDataURL(options);
+
+    downloadFile(dataUrl, "svg");
+    autoZoom();
+  };
+
+  const saveJson = async () => {
+    const dataUrl = canvas.toJSON(JSON_KEYS);
+
+    await transformText(dataUrl.objects);
+    const fileString = `data:text/json;charset=utf-8,${encodeURIComponent(
+      JSON.stringify(dataUrl, null, "\t"),
+    )}`;
+    downloadFile(fileString, "json");
+  };
+
+  const loadJson = (json: string) => {
+    const data = JSON.parse(json);
+
+    canvas.loadFromJSON(data, () => {
+      autoZoom();
+    });
+  };
+
+  const saveJpg = () => {
+    const options = generateSaveOptions();
+
+    canvas.setViewportTransform([1, 0, 0, 1, 0, 0]);
+    const dataUrl = canvas.toDataURL(options);
+
+    downloadFile(dataUrl, "jpg");
+    autoZoom();
+  };
+
   const center = (object: fabric.Object) => {
     const workspace = getWorkspace();
     const center = workspace?.getCenterPoint();
@@ -55,6 +118,11 @@ const buildEditor = ({
 
 
   return {
+    loadJson,
+    saveJson,
+    savePng,
+    saveSvg,
+    saveJpg,
     canRedo,
     canUndo,
     getWorkspace,
@@ -543,7 +611,7 @@ export const useEditor = ({
 
 
 
-
+  useWindowEvents();
 
   const {
     save,
@@ -564,14 +632,14 @@ export const useEditor = ({
     container,
   });
 
-  // useHotkeys({
-  //   undo,
-  //   redo,
-  //   copy,
-  //   paste,
-  //   save,
-  //   canvas,
-  // });
+  useHotkeys({
+    undo,
+    redo,
+    copy,
+    paste,
+    save,
+    canvas,
+  });
 
   useCanvasEvents({
     save,
