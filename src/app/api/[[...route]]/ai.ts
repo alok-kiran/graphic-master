@@ -8,7 +8,7 @@ import { replicate } from "@/lib/replicate";
 const app = new Hono()
   .post(
     "/remove-bg",
-    //verifyAuth(),
+    verifyAuth(),
     zValidator(
       "json",
       z.object({
@@ -31,7 +31,7 @@ const app = new Hono()
   )
   .post(
     "/generate-image",
-    //verifyAuth(),
+    verifyAuth(),
     zValidator(
       "json",
       z.object({

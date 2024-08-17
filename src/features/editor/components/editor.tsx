@@ -21,8 +21,14 @@ import { DrawSidebar } from './draw-sidebar';
 import { SettingsSidebar } from './settings-sidebar';
 import { Footer } from './footer';
 import debounce from 'lodash.debounce';
+import { ResponseType } from "@/features/projects/api/use-get-project";
 
-function Editor() {
+
+interface EditorProps {
+  initialData: ResponseType["data"];
+};
+
+function Editor({ initialData }: EditorProps) {
 
   const canvasRef = useRef(null);
   const containerRef = useRef<HTMLDivElement>(null);

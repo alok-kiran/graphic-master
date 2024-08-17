@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import { eq } from "drizzle-orm";
 import { zValidator } from "@hono/zod-validator";
 import { unsplash } from "@/lib/unsplash";
+import { verifyAuth } from "@hono/auth-js";
 
 const DEFAULT_COUNT = 30;
 const DEFAULT_COLLECTIONS = ["317099"];
@@ -12,7 +13,7 @@ const DEFAULT_COLLECTIONS = ["317099"];
 // import { users } from "@/db/schema";
 
 const app = new Hono()
-  .get("/", async (c) => {
+  .get("/",   verifyAuth(), async (c) => {
     const images = await unsplash.photos.getRandom({
       collectionIds: DEFAULT_COLLECTIONS,
       count: DEFAULT_COUNT,
