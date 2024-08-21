@@ -22,6 +22,8 @@ import { SettingsSidebar } from './settings-sidebar';
 import { Footer } from './footer';
 import debounce from 'lodash.debounce';
 import { ResponseType } from "@/features/projects/api/use-get-project";
+import { useUpdateProject } from "@/features/projects/api/use-update-project";
+
 
 
 interface EditorProps {
@@ -33,7 +35,9 @@ function Editor({ initialData }: EditorProps) {
   const canvasRef = useRef(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeTool, setActiveTool] = useState<ActiveTool>("select");
+  const { mutate } = useUpdateProject(initialData.id);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedSave = useCallback(
     debounce(
       (values: { 
@@ -41,12 +45,10 @@ function Editor({ initialData }: EditorProps) {
         height: number,
         width: number,
       }) => {
-        //mutate(values);
+        mutate(values);
     },
-    500
-  ), [
-   // mutate
-  ]);
+    1000
+  ), [mutate]);
 
   const onClearSelection = useCallback(() => {
     if(selectionDependentTools.includes(activeTool)) {
@@ -56,6 +58,10 @@ function Editor({ initialData }: EditorProps) {
 
     const { init, editor } = useEditor({
       clearSelectionCallback: onClearSelection,
+      defaultState: initialData.json,
+      defaultWidth: initialData.width,
+      defaultHeight: initialData.height,
+      saveCallback: debouncedSave,
     });
 
     const onChangeActiveTool = useCallback((tool: ActiveTool) => {
@@ -93,6 +99,7 @@ function Editor({ initialData }: EditorProps) {
   return (
     <div className=' h-full flex flex-col'>
         <Navbar 
+          id={initialData?.id}
           editor={editor}
           activeTool={activeTool}
           onChangeActiveTool={onChangeActiveTool}

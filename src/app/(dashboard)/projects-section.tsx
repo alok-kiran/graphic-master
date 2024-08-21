@@ -60,6 +60,7 @@ export const ProjectsSection = () => {
     isFetchingNextPage,
     hasNextPage,
   } = useGetProjects();
+  console.log(data);
 
   if (status === "pending") {
     return (
