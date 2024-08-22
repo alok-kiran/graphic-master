@@ -5,6 +5,7 @@ import "./globals.css";
 import { Providers } from "@/components/providers";
 import { Toaster } from "sonner";
 import { auth } from "@/auth";
+import { Modals } from "@/components/modals";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,6 +27,7 @@ export default async function RootLayout({
         <link rel="icon" href="/logo.svg" />
       <body className={inter.className}>
         <Toaster />
+        <Modals />
         <Providers>{children}</Providers>
       </body>
     </html>

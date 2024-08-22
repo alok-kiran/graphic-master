@@ -1,18 +1,17 @@
 import Image from "next/image";
 import { AlertTriangle } from "lucide-react";
 
-//import { usePaywall } from "@/features/subscriptions/hooks/use-paywall";
+import { usePaywall } from "@/features/subscriptions/hooks/use-paywall";
 
 import { ActiveTool, Editor } from "@/features/editor/types";
 import { ToolSidebarClose } from "@/features/editor/components/tool-sidebar-close";
 import { ToolSidebarHeader } from "@/features/editor/components/tool-sidebar-header";
 
-//import { useRemoveBg } from "@/features/ai/api/use-remove-bg";
+import { useRemoveBg } from "@/features/ai/api/use-remove-bg";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useRemoveBg } from "@/features/ai/api/use-remove-bg";
 
 interface RemoveBgSidebarProps {
   editor: Editor | undefined;
@@ -25,7 +24,7 @@ export const RemoveBgSidebar = ({
   activeTool,
   onChangeActiveTool,
 }: RemoveBgSidebarProps) => {
-  //const { shouldBlock, triggerPaywall } = usePaywall();
+  const { shouldBlock, triggerPaywall } = usePaywall();
   const mutation = useRemoveBg();
 
   const selectedObject = editor?.selectedObjects[0];
@@ -38,10 +37,10 @@ export const RemoveBgSidebar = ({
   };
 
   const onClick = () => {
-    // if (shouldBlock) {
-    //   triggerPaywall();
-    //   return;
-    // }
+    if (shouldBlock) {
+      triggerPaywall();
+      return;
+    }
 
     mutation.mutate({
       image: imageSrc,
