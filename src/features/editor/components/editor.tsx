@@ -23,6 +23,7 @@ import { Footer } from './footer';
 import debounce from 'lodash.debounce';
 import { ResponseType } from "@/features/projects/api/use-get-project";
 import { useUpdateProject } from "@/features/projects/api/use-update-project";
+import { TemplateSidebar } from './template-sidebar';
 
 
 
@@ -145,6 +146,11 @@ function Editor({ initialData }: EditorProps) {
               onChangeActiveTool={onChangeActiveTool}
             />
             <ImageSidebar 
+              editor={editor}
+              activeTool={activeTool}
+              onChangeActiveTool={onChangeActiveTool}
+            />
+            <TemplateSidebar
               editor={editor}
               activeTool={activeTool}
               onChangeActiveTool={onChangeActiveTool}
