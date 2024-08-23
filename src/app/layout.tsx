@@ -27,7 +27,6 @@ export default async function RootLayout({
         <link rel="icon" href="/logo.svg" />
       <body className={inter.className}>
         <Toaster />
-        <Modals />
         <Providers>{children}</Providers>
       </body>
     </html>

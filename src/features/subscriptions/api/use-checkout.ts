@@ -10,7 +10,7 @@ export const useCheckout = () => {
   const mutation = useMutation<
     ResponseType,
     Error
-  >({
+>({
     mutationFn: async () => {
       const response = await client.api.subscriptions.checkout.$post();
 

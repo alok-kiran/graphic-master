@@ -3,7 +3,6 @@
 import Image from "next/image";
 import { CheckCircle2 } from "lucide-react";
 
-// import { useCheckout } from "@/features/subscriptions/api/use-checkout";
 import { useSubscriptionModal } from "@/features/subscriptions/store/use-subscription-modal";
 
 import {
@@ -16,9 +15,10 @@ import {
 } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
+import { useCheckout } from "../api/use-checkout";
 
 export const SubscriptionModal = () => {
-  // const mutation = useCheckout();
+  const mutation = useCheckout();
   const { isOpen, onClose } = useSubscriptionModal();
   console.log(['SubscriptionModal', isOpen, onClose]);
   return (
@@ -68,7 +68,7 @@ export const SubscriptionModal = () => {
         <DialogFooter className="pt-2 mt-4 gap-y-2">
           <Button
             className="w-full"
-            onClick={() => {}}
+            onClick={() => mutation.mutate()}
             disabled={false}
           >
             Upgrade
