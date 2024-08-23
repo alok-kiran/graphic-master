@@ -10,7 +10,7 @@ import { usePathname } from "next/navigation";
 
 import { usePaywall } from "@/features/subscriptions/hooks/use-paywall";
 import { useCheckout } from "@/features/subscriptions/api/use-checkout";
-// import { useBilling } from "@/features/subscriptions/api/use-billing";
+import { useBilling } from "@/features/subscriptions/api/use-billing";
 
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -19,7 +19,7 @@ import { SidebarItem } from "./sidebar-item";
 
 export const SidebarRoutes = () => {
   const mutation = useCheckout();
-  // const billingMutation = useBilling();
+  const billingMutation = useBilling();
   const { shouldBlock, isLoading, triggerPaywall } = usePaywall();
 
   const pathname = usePathname();
@@ -30,12 +30,12 @@ export const SidebarRoutes = () => {
       return;
     }
 
-    // billingMutation.mutate();
+    billingMutation.mutate();
   };
 
   return (
     <div className="flex flex-col gap-y-4 flex-1">
-      {true && (
+      {shouldBlock && !isLoading && (
         <>
           <div className="px-3">
             <Button
